@@ -6,6 +6,6 @@ namespace IoC.Core
 {
     interface IDependencyDescription
     {
-
+        public object GetObject();
     }
 }

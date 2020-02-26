@@ -11,7 +11,7 @@ namespace IoC.Test
         {
             var container = new Container();
             container.Register<ITestService>(() => new EmailService());
-
+            
             var service = container.Resolve<ITestService>();
             service.PrintName();
         }
