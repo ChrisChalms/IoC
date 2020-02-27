@@ -15,7 +15,7 @@ container.Register<ITestService>(() => new GuiService());
 container.Register<ITestService>(typeof(StringService));
 container.Register<ITestService>(new GuiService());
 
-// Resolve dependencies
+// Resolve dependency
 var service = container.Resolve<ITestService>();
 
 // Check registered dependencies
@@ -26,6 +26,11 @@ Console.WriteLine("Is registered? {0}", container.IsRegistered(typeof(ITestServi
 Console.WriteLine("What's the scope? {0}", container.GetRegistrationScope<ITestService>());
 // or
 Console.WriteLine("What's the scope? {0}", container.GetRegistrationScope(typeof(ITestService)));
+
+// Unregister dependency
+container.Unregister<ITestService>();
+//or
+container.Unregister(typeof(ITestService));
 
 ```
 
@@ -48,7 +53,7 @@ container.Register<ITestService>(typeof(StringService), false); // Transient - D
 ```
 
 # TODO
-  * Add unregister functionality
+  * ~~Add unregister functionality~~
   * Add a search for another constructor if a public on can't be found to `Register<T>(Type)`
   * Add parameter support for `Register<T>(Type)`
   * Add a benchmark project and check performance
