@@ -6,6 +6,7 @@ namespace IoC.Core
 {
     public class Container
     {
+        public enum DependencyScope{ SINGLETON, TRANSIENT }
         private Dictionary<Type, IDependencyDescription> _dependencies;
 
         // Initialize
@@ -38,9 +39,9 @@ namespace IoC.Core
         /// Register an implementation type for the supplied interface
         /// <code>Container.Register&lt;interface&gt;(implementation)</code>
         /// </summary>
-        /// <remarks>Uses reflection</remarks>
         /// <typeparam name="T">Interface to register</typeparam>
-        /// <param name="implementation">Implementation Type</param>
+        /// <param name="implementation">Implementation type</param>
+        /// <remarks>Uses reflection</remarks>
         public void Register<T>(Type implementation)
         {
             if (implementation == null)
@@ -52,9 +53,27 @@ namespace IoC.Core
             _dependencies[typeOf] = new ImplentationRegistry(implementation);
         }
 
+        /// <summary>
+        /// Register an existing implementation of an interface
+        /// <code>Container.Register&lt;interface&gt;(new implementation())</code>
+        /// </summary>
+        /// <typeparam name="T">Interface to register</typeparam>
+        /// <param name="implementationObject">Implementation object</param>
+        /// <remarks>Singleton only, does not support transient scope</remarks>
+        public void Register<T>(object implementationObject)
+        {
+            if(implementationObject == null)
+                throw new Exception("Passed implementation object cannot be null");
+            var typeOf = typeOf<T>();
+            if (IsRegistered(typeOf))
+                throw new Exception("Dependency already registered");
+
+            _dependencies[typeOf] = new ObjectRegistry(implementationObject);
+        }
+
         #endregion
 
-        #region Retrieval
+        #region Resolution
 
         /// <summary>
         /// Returns the object registered to a given type if registered
@@ -68,14 +87,19 @@ namespace IoC.Core
             if (!IsRegistered(typeOf))
                 throw new Exception($"No dependency of type {typeOf} registered");
 
-            return (T)_dependencies[typeof(T)].GetObject();
+            return (T)_dependencies[typeOf].GetObject();
         }
 
         #endregion
 
         #region Helpers
 
-        // Does the dependency dictionary contain the key?
+        /// <summary>
+        /// Return whether an implementation of the passed interface has been registered
+        /// <code>Container.IsRegistered(typeOf(ITestService))</code>
+        /// </summary>
+        /// <param name="key">Interface to check</param>
+        /// <returns>bool</returns>
         public bool IsRegistered(Type key) => _dependencies.ContainsKey(key);
 
         // Return the typeOf of the passed generic

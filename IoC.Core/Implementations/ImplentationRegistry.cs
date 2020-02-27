@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IoC.Core
 {
-    class ImplentationRegistry : IDependencyDescription
+    internal class ImplentationRegistry : IDependencyDescription
     {
         private ConstructorInfo _constructorInfo;
 
