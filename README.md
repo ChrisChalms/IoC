@@ -18,18 +18,16 @@ container.Register<ITestService>(new GuiService());
 // Resolve dependency
 var service = container.Resolve<ITestService>();
 
-// Check registered dependencies
+// Check registration
 Console.WriteLine("Is registered? {0}", container.IsRegistered<ITestService>());
-// or
 Console.WriteLine("Is registered? {0}", container.IsRegistered(typeof(ITestService)));
 
+// Check scope
 Console.WriteLine("What's the scope? {0}", container.GetRegistrationScope<ITestService>());
-// or
 Console.WriteLine("What's the scope? {0}", container.GetRegistrationScope(typeof(ITestService)));
 
 // Unregister dependency
 container.Unregister<ITestService>();
-//or
 container.Unregister(typeof(ITestService));
 
 ```
