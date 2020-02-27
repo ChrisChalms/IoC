@@ -18,7 +18,7 @@ namespace IoC.Core
 
         /// <summary>
         /// Register an factory function to be called on resolution
-        /// <code>Container.Register(() => new implementation())</code>
+        /// <code>Container.Register&lt;interface&gt;(() => new implementation())</code>
         /// </summary>
         /// <typeparam name="T">Interface to register</typeparam>
         /// <param name="factory">Function to call on resolution</param>
@@ -26,33 +26,47 @@ namespace IoC.Core
         {
             if (factory == null)
                 throw new Exception("No function passed");
-            var typeOf = typeof(T);
-
+            
+            var typeOf = typeOf<T>();
             if (IsRegistered(typeOf))
                 throw new Exception("Dependency already registered");
             
-            _dependencies[typeOf] = new FactoryFunction<T>(factory);
+            _dependencies[typeOf] = new FactoryFunctionRegistry<T>(factory);
         }
 
-        // Register an existing object
-        public void Register<T>(object implementation)
+        /// <summary>
+        /// Register an implementation type for the supplied interface
+        /// <code>Container.Register&lt;interface&gt;(implementation)</code>
+        /// </summary>
+        /// <remarks>Uses reflection</remarks>
+        /// <typeparam name="T">Interface to register</typeparam>
+        /// <param name="implementation">Implementation Type</param>
+        public void Register<T>(Type implementation)
         {
             if (implementation == null)
                 throw new Exception("Passed implementation cannot be null");
-            if (IsRegistered(typeof(T)))
+            var typeOf = typeOf<T>();
+            if (IsRegistered(typeOf))
                 throw new Exception("Dependency already registered");
 
+            _dependencies[typeOf] = new ImplentationRegistry(implementation);
         }
 
         #endregion
 
         #region Retrieval
 
-        // Return the concrete implementation if present
+        /// <summary>
+        /// Returns the object registered to a given type if registered
+        /// <code>Container.Resolve&lt;interface&gt;()</code>
+        /// </summary>
+        /// <typeparam name="T">Interface type</typeparam>
+        /// <returns>Implementation of interface</returns>
         public T Resolve<T>()
         {
-            if (!IsRegistered(typeof(T)))
-                throw new Exception($"No dependency of type {typeof(T)} registered");
+            var typeOf = typeOf<T>();
+            if (!IsRegistered(typeOf))
+                throw new Exception($"No dependency of type {typeOf} registered");
 
             return (T)_dependencies[typeof(T)].GetObject();
         }
@@ -63,6 +77,9 @@ namespace IoC.Core
 
         // Does the dependency dictionary contain the key?
         public bool IsRegistered(Type key) => _dependencies.ContainsKey(key);
+
+        // Return the typeOf of the passed generic
+        private Type typeOf<T>() => typeof(T);
 
         #endregion
     }

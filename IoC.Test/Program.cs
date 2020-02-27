@@ -10,9 +10,11 @@ namespace IoC.Test
         static void Main(string[] args)
         {
             var container = new Container();
-            container.Register<ITestService>(() => new EmailService());
-            
+            //container.Register<ITestService>(() => new EmailService());
+            container.Register<ITestService>(typeof(LogService));
+
             var service = container.Resolve<ITestService>();
+            
             service.PrintName();
         }
     }

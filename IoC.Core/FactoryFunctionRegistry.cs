@@ -4,12 +4,12 @@ using System.Text;
 
 namespace IoC.Core
 {
-    internal class FactoryFunction<T> : IDependencyDescription
+    internal class FactoryFunctionRegistry<T> : IDependencyDescription
     {
         public Func<T> _factory;
         
         // Initialize
-        public FactoryFunction(Func<T> createFunction)
+        public FactoryFunctionRegistry(Func<T> createFunction)
         {
             _factory = createFunction;
         }
