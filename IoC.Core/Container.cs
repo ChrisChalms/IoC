@@ -8,13 +8,13 @@ namespace IoC.Core
     /// </summary>
     public class Container
     {
-        private Dictionary<Type, IDependencyRegistration> _dependencies;
         public enum RegistrationScope
         {
             SINGLETON,
             TRANSIENT
         }
 
+        private Dictionary<Type, IDependencyRegistration> _dependencies;
 
         // Initialize
         public Container() => _dependencies = new Dictionary<Type, IDependencyRegistration>();
