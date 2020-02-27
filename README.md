@@ -35,7 +35,7 @@ There's a few options for the registration of dependencies:
   * Call `Register<T>(Object)` to bind an existing object to the generic parameter - Can only have singleton scope
 
 # Scope
-For the `Register<T>(Type)` and `Register<T>(Funct<T>)` calls, there's an optional singleton boolean value to control the dependency's scope
+For the `Register<T>(Type)` and `Register<T>(Funct<T>)` calls, there's an optional singleton boolean value to control the dependency's scope. The `Register<T>(Object)` call is always a singleton.
 
 ```c#
 
