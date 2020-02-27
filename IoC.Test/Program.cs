@@ -27,10 +27,15 @@ namespace IoC.Test
                 container.Resolve<ITestService>().PrintResult();
 
             // Registry check
-            Console.WriteLine("Registered? {0}", container.IsRegistered(typeof(ITestService)));
             Console.WriteLine("Registered? {0}", container.IsRegistered<ITestService>());
             Console.WriteLine("Scope? {0}", container.GetRegistrationScope<ITestService>());
-            Console.WriteLine("Scope? {0}", container.GetRegistrationScope(typeof(ITestService)));
+
+            // Unregister
+            //container.Unregister<ITestService>();
+            container.Unregister(typeof(ITestService));
+
+            // Check registry again
+            Console.WriteLine("Registered? {0}", container.IsRegistered(typeof(ITestService)));
         }
     }
 }

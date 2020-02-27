@@ -77,6 +77,33 @@ namespace IoC.Core
             _dependencies[typeOf] = new ObjectRegistry(implementationObject);
         }
 
+        /// <summary>
+        /// Unregister a dependency
+        /// <code>Container.Unregister&lt;interface&gt;()</code>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public  void Unregister<T>()
+        {
+            var typeOf = typeOf<T>();
+            if (!IsRegistered(typeOf))
+                throw new Exception($"No {typeOf} dependency registered");
+
+            _dependencies.Remove(typeOf);
+        }
+
+        /// <summary>
+        /// Unregister a dependency
+        /// <code>Container.Unregister(typeof(interface))</code>
+        /// </summary>
+        /// <param name="key">Interface type</param>
+        public void Unregister(Type key)
+        {
+            if(!IsRegistered(key))
+                throw new Exception($"No {key} dependency registered");
+
+            _dependencies.Remove(key);
+        }
+
         #endregion
 
         #region Resolution
