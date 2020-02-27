@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IoC.Core
 {
+    /// <summary>
+    /// IoC container. Handles  injection for reistered types
+    /// </summary>
     public class Container
     {
-        public enum DependencyScope{ SINGLETON, TRANSIENT }
-        private Dictionary<Type, IDependencyDescription> _dependencies;
+        private Dictionary<Type, IDependencyRegistration> _dependencies;
+        public enum RegistrationScope
+        {
+            SINGLETON,
+            TRANSIENT
+        }
+
 
         // Initialize
-        public Container()
-        {
-            _dependencies = new Dictionary<Type, IDependencyDescription>();
-        }
+        public Container() => _dependencies = new Dictionary<Type, IDependencyRegistration>();
 
         #region Registration
 
@@ -23,16 +27,17 @@ namespace IoC.Core
         /// </summary>
         /// <typeparam name="T">Interface to register</typeparam>
         /// <param name="factory">Function to call on resolution</param>
-        public void Register<T>(Func<T> factory)
+        /// <param name="singleton">Is the class a singleton? Default false</param>
+        public void Register<T>(Func<T> factory, bool singleton = false)
         {
             if (factory == null)
-                throw new Exception("No function passed");
+                throw new Exception("No factory function passed");
             
             var typeOf = typeOf<T>();
             if (IsRegistered(typeOf))
                 throw new Exception("Dependency already registered");
             
-            _dependencies[typeOf] = new FactoryFunctionRegistry<T>(factory);
+            _dependencies[typeOf] = new FactoryFunctionRegistry<T>(factory, singleton);
         }
 
         /// <summary>
@@ -41,8 +46,9 @@ namespace IoC.Core
         /// </summary>
         /// <typeparam name="T">Interface to register</typeparam>
         /// <param name="implementation">Implementation type</param>
+        /// <param name="singleton">Is the class a singleton? Default false</param>
         /// <remarks>Uses reflection</remarks>
-        public void Register<T>(Type implementation)
+        public void Register<T>(Type implementation, bool singleton = false)
         {
             if (implementation == null)
                 throw new Exception("Passed implementation cannot be null");
@@ -50,7 +56,7 @@ namespace IoC.Core
             if (IsRegistered(typeOf))
                 throw new Exception("Dependency already registered");
 
-            _dependencies[typeOf] = new ImplentationRegistry(implementation);
+            _dependencies[typeOf] = new ImplentationRegistry(implementation, singleton);
         }
 
         /// <summary>
@@ -96,11 +102,52 @@ namespace IoC.Core
 
         /// <summary>
         /// Return whether an implementation of the passed interface has been registered
-        /// <code>Container.IsRegistered(typeOf(ITestService))</code>
+        /// <code>Container.IsRegistered(typeOf(interface))</code>
         /// </summary>
         /// <param name="key">Interface to check</param>
         /// <returns>bool</returns>
         public bool IsRegistered(Type key) => _dependencies.ContainsKey(key);
+
+        /// <summary>
+        /// Return whether an implementation of the passed interface has been registered
+        /// <code>Container.IsRegistered&lt;interface&gt;()</code>
+        /// </summary>
+        /// <typeparam name="T">Interface to check</typeparam>
+        /// <returns>bool</returns>
+        public bool IsRegistered<T>() => _dependencies.ContainsKey(typeOf<T>());
+
+        /// <summary>
+        /// Returns the scope of the dependency registration. Currently SINGLETON or TRANSIENT
+        /// <code>Container.IsRegistered(typeOf(interface))</code>
+        /// </summary>
+        /// <param name="key">Interface type</param>
+        /// <returns>Container.RegistrationScope</returns>
+        public RegistrationScope GetRegistrationScope(Type key)
+        {
+            if (key == null)
+                throw new Exception("Passed key cannot be null");
+            if (!IsRegistered(key))
+                throw new Exception("Dependency not registered");
+
+
+            return _dependencies[key].GetRegistrationScope();
+        }
+
+        /// <summary>
+        /// Returns the scope of the dependency registration. Currently SINGLETON or TRANSIENT
+        /// <code>Container.GetRegistrationScope&lt;interface&gt;()</code>
+        /// </summary>
+        /// <typeparam name="T">Interface type</typeparam>
+        /// <returns>Container.RegistrationScope</returns>
+        public RegistrationScope GetRegistrationScope<T>()
+        {
+            var typeOf = typeOf<T>();
+            if (!IsRegistered(typeOf))
+                throw new Exception("Dependency not registered");
+
+
+            return _dependencies[typeOf].GetRegistrationScope();
+        }
 
         // Return the typeOf of the passed generic
         private Type typeOf<T>() => typeof(T);

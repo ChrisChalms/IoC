@@ -10,14 +10,27 @@ namespace IoC.Test
         static void Main(string[] args)
         {
             var container = new Container();
-            //container.Register<ITestService>(() => new EmailService());
-            //container.Register<ITestService>(typeof(LogService));
-            //container.Register<ITestService>(new LogService());
 
-            var service = container.Resolve<ITestService>();
+            // Registration
 
+            // FactoryFunction
+            container.Register<ITestService>(() => new GuiService(), false);
+            
+            // Implementation
+            //container.Register<ITestService>(typeof(StringService), true);
+
+            // Object
+            //container.Register<ITestService>(new GuiService());
+
+            // Resolution
+            for(var i = 0; i < 10; i++)
+                container.Resolve<ITestService>().PrintResult();
+
+            // Registry check
             Console.WriteLine("Registered? {0}", container.IsRegistered(typeof(ITestService)));
-            service.PrintName();
+            Console.WriteLine("Registered? {0}", container.IsRegistered<ITestService>());
+            Console.WriteLine("Scope? {0}", container.GetRegistrationScope<ITestService>());
+            Console.WriteLine("Scope? {0}", container.GetRegistrationScope(typeof(ITestService)));
         }
     }
 }

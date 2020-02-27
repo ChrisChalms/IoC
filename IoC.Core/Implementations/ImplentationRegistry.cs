@@ -7,11 +7,18 @@ using System.Text;
 
 namespace IoC.Core
 {
-    internal class ImplentationRegistry : IDependencyDescription
+    /// <summary>
+    /// Represents an implementation registration object
+    /// </summary>
+    internal class ImplentationRegistry : IDependencyRegistration
     {
         private ConstructorInfo _constructorInfo;
+        private object _cachedObject;
 
-        public ImplentationRegistry(Type type)
+        public bool Singleton { get; private set; }
+
+        // Initialize
+        public ImplentationRegistry(Type type, bool singleton)
         {
             // Get constructor
             var constructors = type.GetConstructors();
@@ -29,11 +36,23 @@ namespace IoC.Core
             // TODO: Support parameters
 
             _constructorInfo = constructor;
+
+            // Create immediately if the dependency is a singleton
+            Singleton = singleton;
+            if (Singleton)
+                _cachedObject = _constructorInfo.Invoke(null);
         }
 
+        // Return the cached object if this is a singleton, otherwise return a new object
         public object GetObject()
         {
-            return _constructorInfo.Invoke(null);
+            return Singleton ? _cachedObject : _constructorInfo.Invoke(null);
+        }
+
+        // Returns the scope of this object
+        public Container.RegistrationScope GetRegistrationScope()
+        {
+            return Singleton ? Container.RegistrationScope.SINGLETON : Container.RegistrationScope.TRANSIENT;
         }
     }
 }
