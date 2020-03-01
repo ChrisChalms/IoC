@@ -52,6 +52,8 @@ container.Register<ITestService>(typeof(StringService), false); // Transient - D
 
 # TODO
   * ~~Add unregister functionality~~
-  * Add a search for another constructor if a public on can't be found to `Register<T>(Type)`
-  * Add parameter support for `Register<T>(Type)`
+  * ~~Add a search for another constructor if a public on can't be found to `Register<T>(Type)`~~
   * ~~Add a benchmark project and check performance~~
+  * Add parameter support for `Register<T>(Type)`*
+  
+*I don't know if this is a good idea, all parameters would have to be resolved via the container, which would then dictate the order dependencies are registered if the requesting class was a singleton (created immediately), which goes against why I created the container. I'll add parameter support if the need arrises 
