@@ -24,9 +24,7 @@ namespace IoC.Core
             var constructors = type.GetConstructors();
 
             if (constructors.Length == 0)
-                throw new Exception($"No public constructors found for type {type}");
-
-            // TODO: Search for an internal constructor
+                constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
 
             var constructor = constructors.First();
 
