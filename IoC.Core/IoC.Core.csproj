@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Chris Chalmers</Authors>
+    <Company>Chris Chalmers</Company>
+    <Description>A lightweight Inversion of Control/Dependency Injector</Description>
+    <Copyright>2020</Copyright>
+    <PackageProjectUrl>https://github.com/ChrisChalms/IoC</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ChrisChalms/IoC</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
   </PropertyGroup>
 
 </Project>

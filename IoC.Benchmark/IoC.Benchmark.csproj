@@ -3,6 +3,12 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Chris Chalmers</Authors>
+    <Description>Simple benchmarking project for IoC.Core</Description>
+    <Copyright>2020</Copyright>
+    <PackageProjectUrl>https://github.com/ChrisChalms/IoC</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ChrisChalms/IoC</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
