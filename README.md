@@ -54,4 +54,4 @@ container.Register<ITestService>(typeof(StringService), false); // Transient - D
   * ~~Add unregister functionality~~
   * Add a search for another constructor if a public on can't be found to `Register<T>(Type)`
   * Add parameter support for `Register<T>(Type)`
-  * Add a benchmark project and check performance
+  * ~~Add a benchmark project and check performance~~
